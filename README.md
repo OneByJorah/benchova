@@ -14,7 +14,7 @@
 Comparing local LLMs usually means ad-hoc prompts and a stopwatch. benchova aims to make that repeatable: discover the models Ollama has loaded, run a fixed task suite, and rank results on accuracy, latency, and throughput. Today the system-telemetry collector, dashboard UI, Docker packaging, and install scripts exist; the benchmark engine and scoring pipeline are on the roadmap.
 
 > [!WARNING]
-> **Pre-alpha.** The dashboard currently displays sample data. The benchmark engine, scoring pipeline, JSON persistence, and backend server are not yet implemented — the scaffolding does not run end-to-end.
+> **Pre-alpha.** The dashboard serves with demo data (a stdlib-only server, no dependencies). The benchmark engine, scoring pipeline, and JSON persistence are not yet implemented — real benchmark runs require a roadmap milestone.
 
 ## Quick Start
 
@@ -24,7 +24,9 @@ cd benchova
 docker compose up -d
 ```
 
-Open **`http://localhost:8081`**. Or serve the dashboard directly: `python -m http.server 8081`.
+Open **`http://localhost:8081`** — it binds to `0.0.0.0` inside the container; the compose mapping keeps the host side on localhost. The server also answers `/healthz` and a demo `/api/summary`.
+
+Environment (`.env.example`, all optional): `DASHBOARD_PORT` (default `8081`), `DASHBOARD_HOST` (default `0.0.0.0`), `OLLAMA_HOST` (host:port of your Ollama instance for real benchmark runs — placeholder only, no keys).
 
 ## Features
 
