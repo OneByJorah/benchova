@@ -16,10 +16,14 @@ COPY *.md ./
 # Create runtime directories
 RUN mkdir -p results outputs data
 
+RUN adduser -u 1000 -D appuser
+
 EXPOSE 8081
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${DASHBOARD_PORT:-8081}/ || exit 1
+    CMD ["curl", "-f", "http://localhost:8081/"]
+
+USER 1000
 
 # Collect system info on startup
 CMD ["python3", "collector/system_info.py"]

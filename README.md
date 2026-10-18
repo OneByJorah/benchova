@@ -24,7 +24,7 @@ cd BenchDash
 docker compose up -d
 ```
 
-Open **http://localhost:8081**. Or serve the dashboard directly: `python -m http.server 8081`.
+Open **`http://localhost:8081`**. Or serve the dashboard directly: `python -m http.server 8081`.
 
 ## Features
 
