@@ -40,6 +40,7 @@ In its current state, the system can only collect system telemetry via `collecto
 ### Real Problem
 
 Evaluating local LLMs is ad-hoc and inconsistent. Practitioners typically:
+
 - Run a few manual prompts and eyeball quality
 - Have no standardized, repeatable test suite
 - Cannot compare models across multiple dimensions (knowledge vs. speed vs. creativity vs. context retention)
@@ -51,7 +52,7 @@ This makes it impossible to make data-driven decisions about which model to use 
 ### Why Existing Tools Were Insufficient
 
 | Tool | Limitation |
-|------|-----------|
+| ------ | ----------- |
 | **Ollama itself** | No built-in benchmarking or evaluation |
 | **lm-eval-harness** | Complex setup, specific model formats, no multi-agent comparison, no real-time dashboard |
 | **OpenAI Evals** | Cloud-focused, not designed for local Ollama models |
@@ -86,9 +87,10 @@ The system fills the **observability and evaluation gap** in the JorahOne stack:
 
 ## Operational Classification
 
-**Classification: PROTOTYPE / DESIGN DOCUMENT**
+## Classification: PROTOTYPE / DESIGN DOCUMENT
 
 Evidence:
+
 - **v1.0.0 tagged** in CHANGELOG — but no actual benchmark code exists beyond one collector module
 - **3 commits** from 3 different author names (Villon, JorahOne Admin, OneByJorah) — likely the same person with different git configurations
 - **Only 1 Python module** exists (`collector/system_info.py`, 101 lines) out of ~20 described modules
@@ -127,7 +129,7 @@ Evidence:
 
 ## Repository Structure
 
-```
+```text
 |BenchDash/
 ├── collector/
 │   └── system_info.py          # ✓ EXISTS — System telemetry collector (101 lines)
@@ -151,6 +153,7 @@ Evidence:
 ```
 
 **Missing directories (described in README but not present):**
+
 - `tests/` — 13 test category modules
 - `ranking/` — scorer and bonus modules
 - `db/` — SQLite schema and CRUD
@@ -163,6 +166,7 @@ Evidence:
 - `docs/` — Supplementary documentation
 
 **Missing files (described in README but not present):**
+
 - `orchestrator.py` — Main pipeline runner
 - `run_benchmark.py` — Single-model runner
 - `run_one_model.py` — Simplified runner
