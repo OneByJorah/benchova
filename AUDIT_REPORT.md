@@ -1,4 +1,4 @@
-# AUDIT_REPORT - BenchDash
+# AUDIT_REPORT - benchova
 
 **Date:** 2026-08-22
 **Score:** 74/100 - DEGRADED (improving)

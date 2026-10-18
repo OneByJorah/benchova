@@ -1,6 +1,6 @@
 # INTENT.md — J1-PIPELINE Phase -1 (ORACLE)
 
-**Repository:** `OneByJorah/BenchDash`
+**Repository:** `OneByJorah/benchova`
 **Analysis Date:** 2026-07-05
 **Analyst:** J1-PIPELINE ORACLE (read-only)
 **Status:** Intent Reconstructed (updated from prior ORACLE run)
@@ -13,7 +13,7 @@
 
 ### Technical Role
 
-**Ollama Benchmark Dashboard (BenchDash)** is a planned comprehensive, automated benchmarking platform for local LLMs running on [Ollama](https://ollama.ai). The README describes an end-to-end pipeline that would:
+**Ollama Benchmark Dashboard (benchova)** is a planned comprehensive, automated benchmarking platform for local LLMs running on [Ollama](https://ollama.ai). The README describes an end-to-end pipeline that would:
 
 1. **Auto-discover** all Ollama models available on the host machine
 2. **Run multi-dimensional tests** across 13+ categories (knowledge, programming, math, reasoning, creativity, conversation, vision, image/audio/video generation, game development, error resilience, consistency, and context-window stress)
@@ -106,7 +106,7 @@ Evidence:
 - **Dependabot configured** for pip, npm, docker, and GitHub Actions — but no `requirements.txt`, `package.json`, or `Dockerfile` exist (template vestiges)
 - **Security policy exists** (SECURITY.md) with vulnerability reporting process
 - **Community files exist** (CODE_OF_CONDUCT.md, CONTRIBUTING.md, issue/PR templates)
-- **Audit branch exists** (`origin/audit/BenchDash`) from a prior J1 pipeline run — indicating the pipeline has touched this repo before
+- **Audit branch exists** (`origin/audit/benchova`) from a prior J1 pipeline run — indicating the pipeline has touched this repo before
 - **MIT License** with copyright assigned to Jhonattan L. Jimenez
 
 ---
@@ -130,7 +130,7 @@ Evidence:
 ## Repository Structure
 
 ```text
-|BenchDash/
+|benchova/
 ├── collector/
 │   └── system_info.py          # ✓ EXISTS — System telemetry collector (101 lines)
 ├── .github/
@@ -194,7 +194,7 @@ Evidence:
 - **Initial commit** (`bc0ced5`): Added `README.md` and `collector/system_info.py` — the README was the first artifact, confirming a documentation-first development approach.
 - **Second commit** (`0f88ea9`): Added all community/governance files — this is the JorahOne portfolio standardization pass.
 - **Third commit** (`22403c5`): Sanitized email references — a security audit pass, which is a positive maturity signal.
-- **Audit branch** (`origin/audit/BenchDash`): A prior J1 pipeline run created this branch, indicating the pipeline has already touched this repo.
+- **Audit branch** (`origin/audit/benchova`): A prior J1 pipeline run created this branch, indicating the pipeline has already touched this repo.
 
 ### Implementation Gap
 

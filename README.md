@@ -1,17 +1,17 @@
-# BenchDash
+# benchova
 
 > A benchmarking platform for local LLMs on Ollama — auto-discover models, run structured test suites, and compare accuracy, latency, and token throughput.
 
-[![License](https://img.shields.io/github/license/OneByJorah/BenchDash?style=for-the-badge&color=FFB300&labelColor=0a0a09)](https://github.com/OneByJorah/BenchDash)
-[![Top Language](https://img.shields.io/github/languages/top/OneByJorah/BenchDash?style=for-the-badge&color=FFB300&labelColor=0a0a09)](https://github.com/OneByJorah/BenchDash)
-[![Stars](https://img.shields.io/github/stars/OneByJorah/BenchDash?style=for-the-badge&color=FFB300&labelColor=0a0a09)](https://github.com/OneByJorah/BenchDash/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/OneByJorah/BenchDash?style=for-the-badge&color=FFB300&labelColor=0a0a09)](https://github.com/OneByJorah/BenchDash/commits)
+[![License](https://img.shields.io/github/license/OneByJorah/benchova?style=for-the-badge&color=FFB300&labelColor=0a0a09)](https://github.com/OneByJorah/benchova)
+[![Top Language](https://img.shields.io/github/languages/top/OneByJorah/benchova?style=for-the-badge&color=FFB300&labelColor=0a0a09)](https://github.com/OneByJorah/benchova)
+[![Stars](https://img.shields.io/github/stars/OneByJorah/benchova?style=for-the-badge&color=FFB300&labelColor=0a0a09)](https://github.com/OneByJorah/benchova/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/OneByJorah/benchova?style=for-the-badge&color=FFB300&labelColor=0a0a09)](https://github.com/OneByJorah/benchova/commits)
 
-![BenchDash dashboard](docs/screenshots/dashboard-desktop.png)
+![benchova dashboard](docs/screenshots/dashboard-desktop.png)
 
 ## What This Is
 
-Comparing local LLMs usually means ad-hoc prompts and a stopwatch. BenchDash aims to make that repeatable: discover the models Ollama has loaded, run a fixed task suite, and rank results on accuracy, latency, and throughput. Today the system-telemetry collector, dashboard UI, Docker packaging, and install scripts exist; the benchmark engine and scoring pipeline are on the roadmap.
+Comparing local LLMs usually means ad-hoc prompts and a stopwatch. benchova aims to make that repeatable: discover the models Ollama has loaded, run a fixed task suite, and rank results on accuracy, latency, and throughput. Today the system-telemetry collector, dashboard UI, Docker packaging, and install scripts exist; the benchmark engine and scoring pipeline are on the roadmap.
 
 > [!WARNING]
 > **Pre-alpha.** The dashboard currently displays sample data. The benchmark engine, scoring pipeline, JSON persistence, and backend server are not yet implemented — the scaffolding does not run end-to-end.
@@ -19,8 +19,8 @@ Comparing local LLMs usually means ad-hoc prompts and a stopwatch. BenchDash aim
 ## Quick Start
 
 ```bash
-git clone https://github.com/OneByJorah/BenchDash.git
-cd BenchDash
+git clone https://github.com/OneByJorah/benchova.git
+cd benchova
 docker compose up -d
 ```
 
@@ -51,7 +51,7 @@ Python 3.11+ · Ollama · HTML/CSS/JS · Docker (Alpine + thttpd) · Docker Comp
 
 ## Contributing
 
-Read [INTENT.md](INTENT.md) for the design spec before opening a PR. [Open an issue](https://github.com/OneByJorah/BenchDash/issues) for bugs or ideas.
+Read [INTENT.md](INTENT.md) for the design spec before opening a PR. [Open an issue](https://github.com/OneByJorah/benchova/issues) for bugs or ideas.
 
 ## License
 

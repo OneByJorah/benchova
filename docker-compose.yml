@@ -1,5 +1,5 @@
 # ============================================================================
-# BenchDash — LLM benchmarking platform
+# benchova — LLM benchmarking platform
 # JorahOne
 #
 # Auto-discover models → Run multi-dimensional tests → Rank & score → Visualize
@@ -11,8 +11,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jorahone/benchdash:latest
-    container_name: benchdash
+    image: ghcr.io/onebyjorah/benchova:latest
+    container_name: benchova
     ports:
       - "${DASHBOARD_PORT:-8081}:${DASHBOARD_PORT:-8081}"
     env_file:
