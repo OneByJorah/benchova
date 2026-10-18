@@ -16,7 +16,8 @@ services:
     ports:
       - "${DASHBOARD_PORT:-8081}:${DASHBOARD_PORT:-8081}"
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       - OLLAMA_HOST=${OLLAMA_HOST:-host.docker.internal:11434}
       - DASHBOARD_PORT=${DASHBOARD_PORT:-8081}
