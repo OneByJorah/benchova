@@ -1,9 +1,11 @@
 # INTENT.md — J1-PIPELINE Phase -1 (ORACLE)
 
-**Repository:** `OneByJorah/BenchDash`
+**Repository:** `OneByJorah/benchova`
 **Analysis Date:** 2026-07-05
 **Analyst:** J1-PIPELINE ORACLE (read-only)
 **Status:** Intent Reconstructed (updated from prior ORACLE run)
+
+> **Update 2026-08-22:** Since this analysis, the repo gained `index.html` (standalone dashboard UI, sample data), `Dockerfile`, `docker-compose.yml`, `.env.example`, `docs/`, `j1.yaml`, `.dockerignore`, and `CODEOWNERS` — several "missing" items listed below now exist. The core finding stands: the benchmark backend (`app.py`, runner, scoring, persistence, scheduler, notifications) is still unimplemented. See README status banner.
 
 ---
 
@@ -11,7 +13,7 @@
 
 ### Technical Role
 
-**Ollama Benchmark Dashboard (BenchDash)** is a planned comprehensive, automated benchmarking platform for local LLMs running on [Ollama](https://ollama.ai). The README describes an end-to-end pipeline that would:
+**Ollama Benchmark Dashboard (benchova)** is a planned comprehensive, automated benchmarking platform for local LLMs running on [Ollama](https://ollama.ai). The README describes an end-to-end pipeline that would:
 
 1. **Auto-discover** all Ollama models available on the host machine
 2. **Run multi-dimensional tests** across 13+ categories (knowledge, programming, math, reasoning, creativity, conversation, vision, image/audio/video generation, game development, error resilience, consistency, and context-window stress)
@@ -38,6 +40,7 @@ In its current state, the system can only collect system telemetry via `collecto
 ### Real Problem
 
 Evaluating local LLMs is ad-hoc and inconsistent. Practitioners typically:
+
 - Run a few manual prompts and eyeball quality
 - Have no standardized, repeatable test suite
 - Cannot compare models across multiple dimensions (knowledge vs. speed vs. creativity vs. context retention)
@@ -49,7 +52,7 @@ This makes it impossible to make data-driven decisions about which model to use 
 ### Why Existing Tools Were Insufficient
 
 | Tool | Limitation |
-|------|-----------|
+| ------ | ----------- |
 | **Ollama itself** | No built-in benchmarking or evaluation |
 | **lm-eval-harness** | Complex setup, specific model formats, no multi-agent comparison, no real-time dashboard |
 | **OpenAI Evals** | Cloud-focused, not designed for local Ollama models |
@@ -84,9 +87,10 @@ The system fills the **observability and evaluation gap** in the JorahOne stack:
 
 ## Operational Classification
 
-**Classification: PROTOTYPE / DESIGN DOCUMENT**
+## Classification: PROTOTYPE / DESIGN DOCUMENT
 
 Evidence:
+
 - **v1.0.0 tagged** in CHANGELOG — but no actual benchmark code exists beyond one collector module
 - **3 commits** from 3 different author names (Villon, JorahOne Admin, OneByJorah) — likely the same person with different git configurations
 - **Only 1 Python module** exists (`collector/system_info.py`, 101 lines) out of ~20 described modules
@@ -102,7 +106,7 @@ Evidence:
 - **Dependabot configured** for pip, npm, docker, and GitHub Actions — but no `requirements.txt`, `package.json`, or `Dockerfile` exist (template vestiges)
 - **Security policy exists** (SECURITY.md) with vulnerability reporting process
 - **Community files exist** (CODE_OF_CONDUCT.md, CONTRIBUTING.md, issue/PR templates)
-- **Audit branch exists** (`origin/audit/BenchDash`) from a prior J1 pipeline run — indicating the pipeline has touched this repo before
+- **Audit branch exists** (`origin/audit/benchova`) from a prior J1 pipeline run — indicating the pipeline has touched this repo before
 - **MIT License** with copyright assigned to Jhonattan L. Jimenez
 
 ---
@@ -125,8 +129,8 @@ Evidence:
 
 ## Repository Structure
 
-```
-|BenchDash/
+```text
+|benchova/
 ├── collector/
 │   └── system_info.py          # ✓ EXISTS — System telemetry collector (101 lines)
 ├── .github/
@@ -149,6 +153,7 @@ Evidence:
 ```
 
 **Missing directories (described in README but not present):**
+
 - `tests/` — 13 test category modules
 - `ranking/` — scorer and bonus modules
 - `db/` — SQLite schema and CRUD
@@ -161,6 +166,7 @@ Evidence:
 - `docs/` — Supplementary documentation
 
 **Missing files (described in README but not present):**
+
 - `orchestrator.py` — Main pipeline runner
 - `run_benchmark.py` — Single-model runner
 - `run_one_model.py` — Simplified runner
@@ -188,7 +194,7 @@ Evidence:
 - **Initial commit** (`bc0ced5`): Added `README.md` and `collector/system_info.py` — the README was the first artifact, confirming a documentation-first development approach.
 - **Second commit** (`0f88ea9`): Added all community/governance files — this is the JorahOne portfolio standardization pass.
 - **Third commit** (`22403c5`): Sanitized email references — a security audit pass, which is a positive maturity signal.
-- **Audit branch** (`origin/audit/BenchDash`): A prior J1 pipeline run created this branch, indicating the pipeline has already touched this repo.
+- **Audit branch** (`origin/audit/benchova`): A prior J1 pipeline run created this branch, indicating the pipeline has already touched this repo.
 
 ### Implementation Gap
 

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>benchova — LLM Benchmark Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='4' height='10' x='1' y='5' fill='%2338bdf8'/%3E%3Crect width='4' height='14' x='6' y='1' fill='%23f59e0b'/%3E%3Crect width='4' height='7' x='11' y='8' fill='%2310b981'/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #1e293b;
+    --border: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --accent-blue: #38bdf8;
+    --accent-orange: #f59e0b;
+    --accent-green: #10b981;
+    --accent-purple: #a78bfa;
+    --accent-red: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p {
+    color: var(--text-secondary);
+    margin-top: 0.4rem;
+    font-size: 1.05rem;
+  }
+  .badges {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+  }
+  .badge.blue { border-color: var(--accent-blue); color: var(--accent-blue); }
+  .badge.green { border-color: var(--accent-green); color: var(--accent-green); }
+  .badge.orange { border-color: var(--accent-orange); color: var(--accent-orange); }
+  .badge.purple { border-color: var(--accent-purple); color: var(--accent-purple); }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 1.5rem; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .stat-card .value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .stat-card .label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .stat-card.blue .value { color: var(--accent-blue); }
+  .stat-card.green .value { color: var(--accent-green); }
+  .stat-card.orange .value { color: var(--accent-orange); }
+  .stat-card.purple .value { color: var(--accent-purple); }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+  }
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+  }
+  .chart-card h3 {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+  .chart-card canvas { max-height: 280px; }
+
+  .model-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  .model-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+  .model-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+  .model-table tr:hover td { background: rgba(56, 189, 248, 0.04); }
+  .model-name { font-weight: 600; color: var(--accent-blue); }
+  .score { font-weight: 700; }
+  .score.high { color: var(--accent-green); }
+  .score.mid { color: var(--accent-orange); }
+  .score.low { color: var(--accent-red); }
+
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+  .footer a { color: var(--accent-blue); text-decoration: none; }
+
+  @media (max-width: 640px) {
+    .charts-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>benchova</h1>
+  <p>Automated benchmarking platform for local LLMs on Ollama</p>
+  <div class="badges">
+    <span class="badge blue">⚡ v1.0.0</span>
+    <span class="badge green">✓ 12 Models</span>
+    <span class="badge orange">📊 240 Runs</span>
+    <span class="badge purple">🐍 Python 3</span>
+    <span class="badge">📦 Ollama</span>
+    <span class="badge">🔄 Auto-Discovery</span>
+    <span class="badge">🧪 Sample Data</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="stats-grid">
+    <div class="stat-card blue">
+      <div class="value">12</div>
+      <div class="label">Models Tracked</div>
+    </div>
+    <div class="stat-card green">
+      <div class="value">240</div>
+      <div class="label">Benchmark Runs</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="value">94.2</div>
+      <div class="label">Avg Quality Score</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="value">3</div>
+      <div class="label">Agent Modes</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Score by Model</h3>
+      <canvas id="scoreChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Tokens/sec</h3>
+      <canvas id="speedChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Category Breakdown</h3>
+      <canvas id="radarChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Success Rate</h3>
+      <canvas id="successChart"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-top: 1.5rem;">
+    <h3>Leaderboard</h3>
+    <table class="model-table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Model</th>
+          <th>Quality</th>
+          <th>Speed (tok/s)</th>
+          <th>Memory</th>
+          <th>Success Rate</th>
+          <th>Overall</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  <a href="https://github.com/OneByJorah/benchova">OneByJorah/benchova</a> &middot; MIT &middot; Built with 🌴 by <a href="https://jorahone.com">JorahOne Networks</a>
+</div>
+
+<script>
+const models = [
+  { name: 'Llama 3.1 70B', quality: 96, speed: 28, mem: 42, success: 98, cat: { know: 95, code: 94, math: 88, reason: 93, creat: 90, conv: 97 } },
+  { name: 'Mixtral 8x7B', quality: 93, speed: 35, mem: 34, success: 97, cat: { know: 92, code: 90, math: 85, reason: 91, creat: 89, conv: 95 } },
+  { name: 'Qwen 2.5 32B', quality: 94, speed: 32, mem: 38, success: 96, cat: { know: 93, code: 92, math: 87, reason: 92, creat: 88, conv: 94 } },
+  { name: 'Gemma 2 27B', quality: 91, speed: 30, mem: 36, success: 95, cat: { know: 91, code: 88, math: 84, reason: 89, creat: 87, conv: 93 } },
+  { name: 'Mistral 7B', quality: 87, speed: 52, mem: 18, success: 94, cat: { know: 86, code: 85, math: 78, reason: 84, creat: 83, conv: 90 } },
+  { name: 'Llama 3.1 8B', quality: 88, speed: 48, mem: 20, success: 96, cat: { know: 87, code: 86, math: 80, reason: 85, creat: 84, conv: 91 } },
+  { name: 'Phi-3 14B', quality: 90, speed: 38, mem: 26, success: 95, cat: { know: 88, code: 91, math: 83, reason: 87, creat: 82, conv: 89 } },
+  { name: 'CodeLlama 34B', quality: 89, speed: 26, mem: 40, success: 93, cat: { know: 85, code: 96, math: 82, reason: 86, creat: 76, conv: 85 } },
+  { name: 'DeepSeek Coder 33B', quality: 92, speed: 27, mem: 39, success: 95, cat: { know: 90, code: 97, math: 86, reason: 90, creat: 80, conv: 88 } },
+  { name: 'StarCoder2 15B', quality: 85, speed: 36, mem: 24, success: 92, cat: { know: 80, code: 95, math: 79, reason: 82, creat: 74, conv: 82 } },
+  { name: 'Solar 10.7B', quality: 86, speed: 42, mem: 22, success: 93, cat: { know: 85, code: 83, math: 77, reason: 83, creat: 81, conv: 88 } },
+  { name: 'Yi 1.5 34B', quality: 90, speed: 29, mem: 37, success: 94, cat: { know: 89, code: 87, math: 82, reason: 88, creat: 86, conv: 92 } },
+];
+
+const blue = '#38bdf8', green = '#10b981', orange = '#f59e0b', purple = '#a78bfa', red = '#ef4444';
+
+new Chart(document.getElementById('scoreChart'), {
+  type: 'bar',
+  data: {
+    labels: models.map(m => m.name.split(' ')[0]),
+    datasets: [{
+      label: 'Quality Score',
+      data: models.map(m => m.quality),
+      backgroundColor: models.map((_, i) => `hsl(${200 + i * 8}, 80%, 55%)`),
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 100, grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+      x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45 } }
+    }
+  }
+});
+
+new Chart(document.getElementById('speedChart'), {
+  type: 'line',
+  data: {
+    labels: models.map(m => m.name.split(' ')[0]),
+    datasets: [{
+      label: 'Tokens/sec',
+      data: models.map(m => m.speed),
+      borderColor: orange, backgroundColor: orange + '22',
+      fill: true, tension: 0.3, pointRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { labels: { color: '#94a3b8' } } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+      x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45 } }
+    }
+  }
+});
+
+const top4 = models.slice(0, 4);
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Knowledge', 'Code', 'Math', 'Reasoning', 'Creativity', 'Conversation'],
+    datasets: top4.map((m, i) => ({
+      label: m.name.split(' ')[0],
+      data: [m.cat.know, m.cat.code, m.cat.math, m.cat.reason, m.cat.creat, m.cat.conv],
+      borderColor: [blue, green, orange, purple][i],
+      backgroundColor: [blue, green, orange, purple][i] + '22',
+    }))
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    scales: { r: { beginAtZero: true, max: 100, grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' }, pointLabels: { color: '#94a3b8' } } },
+    plugins: { legend: { labels: { color: '#94a3b8' } } }
+  }
+});
+
+new Chart(document.getElementById('successChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Pass', 'Warn', 'Fail'],
+    datasets: [{
+      data: [87, 9, 4],
+      backgroundColor: [green, orange, red],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } },
+    cutout: '65%'
+  }
+});
+
+const tbody = document.getElementById('leaderboardBody');
+models.sort((a, b) => (b.quality * 0.4 + b.speed * 0.2 + b.success * 0.4) - (a.quality * 0.4 + a.speed * 0.2 + a.success * 0.4));
+models.forEach((m, i) => {
+  const overall = Math.round(m.quality * 0.4 + m.speed * 0.2 + m.success * 0.4);
+  const scoreClass = overall >= 90 ? 'high' : overall >= 75 ? 'mid' : 'low';
+  const cells = [
+    [String(i + 1), ''],
+    [m.name, 'model-name'],
+    [String(m.quality), `score ${m.quality >= 90 ? 'high' : m.quality >= 80 ? 'mid' : 'low'}`],
+    [String(m.speed), ''],
+    [`${m.mem} GB`, ''],
+    [`${m.success}%`, `score ${m.success >= 95 ? 'high' : m.success >= 90 ? 'mid' : 'low'}`],
+    [String(overall), `score ${scoreClass}`],
+  ];
+  const tr = document.createElement('tr');
+  for (const [text, cls] of cells) {
+    const td = document.createElement('td');
+    td.textContent = text;
+    if (cls) td.className = cls;
+    tr.appendChild(td);
+  }
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>

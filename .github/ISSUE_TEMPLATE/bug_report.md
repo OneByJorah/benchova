@@ -1,32 +1,37 @@
 ---
-name: Bug Report
-about: Create a report to help us improve
+name: Bug report
+about: Report a problem or unexpected behavior
 title: '[BUG] '
 labels: bug
 assignees: ''
-
 ---
 
-**Describe the Bug**
+## Describe the bug
+
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+## To Reproduce
+
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
 
-**Expected Behavior**
-A clear and concise description of what you expected to happen.
+1. Clone and run `...`
+2. Configure `...`
+3. See error
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## Expected behavior
 
-**Environment (please complete the following information):**
-- OS: [e.g. Ubuntu 22.04]
-- Python Version: [e.g. 3.11]
-- Docker Version: [e.g. 24.0]
+What you expected to happen.
 
-**Additional Context**
-Add any other context about the problem here.
+## Screenshots / logs
+
+If applicable, add screenshots or log output.
+
+## Environment
+
+- OS:
+- Browser/runtime version:
+- Project version or branch:
+
+## Additional context
+
+Add any other context here.

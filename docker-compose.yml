@@ -1,10 +1,9 @@
-version: "3.9"
-
 # ============================================================================
-# BenchDash — LLM benchmarking platform
+# benchova — LLM benchmarking platform
 # JorahOne
 #
 # Auto-discover models → Run multi-dimensional tests → Rank & score → Visualize
+# NOTE: backend server not yet implemented; this scaffolding is not functional.
 # ============================================================================
 
 services:
@@ -12,21 +11,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jorahone/benchdash:latest
-    container_name: benchdash
+    image: ghcr.io/onebyjorah/benchova:latest
+    container_name: benchova
     ports:
       - "${DASHBOARD_PORT:-8081}:${DASHBOARD_PORT:-8081}"
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       - OLLAMA_HOST=${OLLAMA_HOST:-host.docker.internal:11434}
       - DASHBOARD_PORT=${DASHBOARD_PORT:-8081}
       - DASHBOARD_HOST=${DASHBOARD_HOST:-0.0.0.0}
       - BENCH_SKIP_MEDIA=${BENCH_SKIP_MEDIA:-0}
     volumes:
-      # Persist benchmark results and database
+      # Persist benchmark results
       - benchmark-data:/app/results
-      - benchmark-db:/app/benchmark.db
       # Mount Docker socket for container-aware benchmarks (optional)
       - /var/run/docker.sock:/var/run/docker.sock:ro
     extra_hosts:
@@ -41,4 +40,3 @@ services:
 
 volumes:
   benchmark-data:
-  benchmark-db:

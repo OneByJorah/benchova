@@ -20,5 +20,10 @@ build/
 *.so
 # Logs
 *.log
+# Collector output
+system_info.json
 # Pipeline artifacts
 reports/
+
+# OneByJorah portfolio tooling
+.venv-screenshot/

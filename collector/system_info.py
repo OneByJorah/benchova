@@ -29,6 +29,12 @@ def run(cmd: str, default=None, shell: bool = False):
         return default
 
 
+def _first_int(text):
+    """Return the first integer found in text, or None."""
+    m = re.search(r"\d+", text or "")
+    return int(m.group()) if m else None
+
+
 def collect():
     info = {
         "cpu": run("lscpu | grep 'Model name' | cut -d: -f2 | xargs", shell=True) or run("sysctl -n machdep.cpu.brand_string"),
@@ -58,15 +64,15 @@ def collect():
     # RAM
     meminfo = run("cat /proc/meminfo | grep MemTotal", shell=True)
     if meminfo:
-        kb = int(re.search(r"\d+", meminfo).group())
-        info["ram_gb"] = round(kb / 1024 / 1024, 1)
+        kb = _first_int(meminfo)
+        info["ram_gb"] = round(kb / 1024 / 1024, 1) if kb is not None else None
 
     # GPU + VRAM + CUDA + driver
     gpu_info = run("nvidia-smi --query-gpu=name,memory.total,driver_version,compute_cap --format=csv,noheader")
     if gpu_info:
         parts = [p.strip() for p in gpu_info.split(",")]
         info["gpu"] = parts[0] if len(parts) > 0 else None
-        info["vram_total_mb"] = int(re.search(r"\d+", parts[1]).group()) if len(parts) > 1 else None
+        info["vram_total_mb"] = _first_int(parts[1]) if len(parts) > 1 else None
         info["driver_version"] = parts[2] if len(parts) > 2 else None
 
     cu = run("nvcc --version | grep release", shell=True) or run("cat /usr/local/cuda/version.txt 2>/dev/null", shell=True)
@@ -100,7 +106,7 @@ def collect():
 
 def save():
     info = collect()
-    path = ROOT / "system_info.json"
+    path = ROOT / "results" / "system_info.json"
     path.write_text(json.dumps(info, indent=2))
     print(f"[system_info] Saved to {path}")
     return info
