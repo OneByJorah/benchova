@@ -7,7 +7,7 @@ FROM python:3.11-alpine
 WORKDIR /app
 
 # Install curl for healthcheck
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl=8.22.0-r0
 
 # Copy application
 COPY collector/ ./collector/
