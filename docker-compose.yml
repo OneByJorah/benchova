@@ -1,9 +1,10 @@
 # ============================================================================
-# BenchDash — LLM benchmarking platform
+# benchova — LLM benchmarking platform
 # JorahOne
 #
 # Auto-discover models → Run multi-dimensional tests → Rank & score → Visualize
-# NOTE: backend server not yet implemented; this scaffolding is not functional.
+# The container collects system telemetry on start, then serves the dashboard
+# on port 8081.
 # ============================================================================
 
 services:
@@ -11,17 +12,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jorahone/benchdash:latest
-    container_name: benchdash
+    image: ghcr.io/onebyjorah/benchova:latest
+    container_name: benchova
     ports:
-      - "${DASHBOARD_PORT:-8081}:${DASHBOARD_PORT:-8081}"
+      - "127.0.0.1:${DASHBOARD_PORT:-8081}:8081"
     env_file:
       - path: .env
         required: false
     environment:
       - OLLAMA_HOST=${OLLAMA_HOST:-host.docker.internal:11434}
-      - DASHBOARD_PORT=${DASHBOARD_PORT:-8081}
-      - DASHBOARD_HOST=${DASHBOARD_HOST:-<ip-address>}
+      - DASHBOARD_PORT=8081
+      - DASHBOARD_HOST=0.0.0.0
       - BENCH_SKIP_MEDIA=${BENCH_SKIP_MEDIA:-0}
     volumes:
       # Persist benchmark results
@@ -32,7 +33,7 @@ services:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${DASHBOARD_PORT:-8081}/api/summary"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/"]
       interval: 30s
       timeout: 5s
       retries: 3
