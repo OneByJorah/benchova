@@ -106,7 +106,7 @@ def collect():
 
 def save():
     info = collect()
-    path = ROOT / "system_info.json"
+    path = ROOT / "results" / "system_info.json"
     path.write_text(json.dumps(info, indent=2))
     print(f"[system_info] Saved to {path}")
     return info
