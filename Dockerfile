@@ -7,7 +7,9 @@ FROM python:3.11-alpine
 WORKDIR /app
 
 # Install curl for healthcheck
-RUN apk add --no-cache curl=8.22.0-r0
+# Exact Alpine versions disappear from the repository, which breaks the build
+# hadolint ignore=DL3018
+RUN apk add --no-cache curl
 
 # Copy application
 COPY collector/ ./collector/
